@@ -30,11 +30,14 @@ export default new Vuex.Store({
     actions: {
         changeChannel({ commit }, channel) {
             commit('addChannel', channel);
-            commit('changeChannel', channel)
+            commit('changeChannel', channel);
         },
         addMessage({ commit }, messageInfo) {
             commit('addChannel', messageInfo.channel);
             commit('appendMessageToChannel', messageInfo);
+        },
+        leftChannel( { commit }, channel){
+            commit('leftChannel', channel);
         }
     },
     mutations: {
@@ -57,6 +60,14 @@ export default new Vuex.Store({
             state.currentChannel = channel;
             state.currentChannelMessages = state.channelMessages[channel];
             state.currentChannelUsers = state.channelUsers[channel];
+        },
+        leftChannel(state, channel) {
+            if (channel != '' && (channel in state.channelMessages)) {
+                delete state.channelMessages[channel];
+            }
+            if (channel != '' && (channel in state.channelUsers)) {
+                delete state.channelUsers[channel];
+            }
         },
         appendMessageToChannel(state, messageInfo) {
             state.channelMessages[messageInfo.channel].push({

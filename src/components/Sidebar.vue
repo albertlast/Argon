@@ -11,7 +11,9 @@
                 <li
                     v-for="channel in channels"
                     :key="channel"
-                    v-on:click.prevent="joinChannel(channel)"
+                    v-on:click.left.prevent="joinChannel(channel)"
+                    v-on:click.right.prevent="leftChannel(channel)"
+                    v-on:click.middle.prevent="joinChannel(channel)"
                     :class="currentChannel == channel ? 'bg-primary s-rounded' : ''"
                 >
                     <a class="channel-link">{{ channel }}</a>
@@ -36,7 +38,7 @@
         <div v-if="channelUserCount > 0">
             <strong>Channel Users ({{ channelUserCount }})</strong>
             <ul>
-                <li @click="startConversation(user)" v-for="user in currentChannelUsers" :key="user.id">
+                <li v-on:click.left="startConversation(user)" v-on:click.middle="startConversation(user)" v-on:click.right="startConversation(user)" v-for="user in currentChannelUsers" :key="user.id">
                     <a class="channel-user">{{ user.nick }}</a>
                 </li>
             </ul>
@@ -75,6 +77,9 @@ export default {
             }
 
             ipcRenderer.send('channel-connection-attempt', channel);
+        },
+        leftChannel(channel) {
+            ipcRenderer.send('channel-left-attempt', channel);
         },
         inChannel(channel) {
             for (let i = 0; i < this.channels.length; i++) {

@@ -41,6 +41,15 @@ module.exports = win => {
         });
     });
 
+    ipcMain.on('channel-left-attempt', (event, channelName) => {
+
+        if (channelName in channels) {
+            console.debug(channelName);
+            channels[channelName].part();
+            delete channels[channelName];
+        }
+    });
+
     ipcMain.on('message-sent', (event, isAction, nick, target, message) => {
         if (!(target in channels)) {
             channels[target] = bot.channel(target);
